@@ -1,0 +1,19 @@
+import zipfile
+import io
+
+# Create a list of ZIP codes
+zip_codes = [f"{i:05d}" for i in range(10000, 100000)]
+
+# Create a ZIP file in memory
+zip_file = io.BytesIO()
+with zipfile.ZipFile(zip_file, 'w') as z:
+    # Write each ZIP code as a separate file
+    for zip_code in zip_codes:
+        z.writestr(f"{zip_code}.txt", zip_code)
+
+# Reset the file pointer to the beginning of the ZIP file
+zip_file.seek(0)
+
+# Save the ZIP file as 'zip_codes.zip'
+with open('zip_codes.zip', 'wb') as f:
+    f.write(zip_file.read())
