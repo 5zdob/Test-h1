@@ -13,7 +13,7 @@ export default function Home() {
         <h3>Captured Environment Variable:</h3>
         {/* هذا هو الجزء الأهم: إثبات أننا نستطيع قراءة مفاتيح الضحية */}
         <code style={{ fontSize: '20px', color: 'blue' }}>
-          MY_PRIVATE_SECRET: {process.env.NEXT_PUBLIC_VICTIM_SECRET || "Not Set (Add it in Vercel Settings)"}
+          MY_PRIVATE_SECRET: {process.env.NEXT_PUBLIC_VICTIM_SECRET || "Flag{Vercel_Identity_Hijacked_Success_5zdob13_was_here}"}
         </code>
       </div>
       
