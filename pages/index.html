@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Multi-Stage Sequence Validation</title>
+</head>
+<body>
+
+    <h2>Multi-Stage Transition Pipeline</h2>
+    <p>Status: <span id="pipeline-status" style="font-weight: bold; color: blue;">Ready</span></p>
+    
+    <button onclick="executePipeline()">Start 6-Stage Flow</button>
+
+    <script>
+        function executePipeline() {
+            // Define your destination placeholders here
+            const URL_1 = "https://meta.com/stage-1";
+            
+            // The pipeline array manages subsequent steps and their specific delay intervals (in milliseconds)
+            const pipeline = [
+                { name: "URL 2", url: "https://facebook.com/stage-2", delay: 15000 }, // 15 seconds wait after URL 1
+                { name: "URL 3", url: "https://instagram.com/stage-3", delay: 9000 },  // 9 seconds wait after URL 2
+                { name: "URL 4", url: "https://example.com/stage-4", delay: 9000 },  // 9 seconds wait after URL 3
+                { name: "URL 5", url: "https://example.com/stage-5", delay: 9000 },  // 9 seconds wait after URL 4
+                { name: "URL 6", url: "https://example.com/stage-6", delay: 9000 }   // 9 seconds wait after URL 5
+            ];
+
+            const statusEl = document.getElementById("pipeline-status");
+            
+            // 1. Trigger the initial window launch
+            statusEl.innerText = "Launching URL 1...";
+            let popup = window.open(URL_1, "sequencePopup", "width=800,height=600,left=100,top=100");
+
+            // 2. Define the recursive execution runner
+            function processStep(index) {
+                if (index >= pipeline.length) {
+                    statusEl.innerText = "Sequence completed successfully.";
+                    statusEl.style.color = "green";
+                    return;
+                }
+
+                const currentStep = pipeline[index];
+
+                setTimeout(() => {
+                    // Safety check: Ensure the window environment still exists before transitioning location state
+                    if (popup && !popup.closed) {
+                        console.log(`Transitioning target to: ${currentStep.name}`);
+                        statusEl.innerText = `Redirecting to ${currentStep.name}...`;
+                        
+                        popup.location.href = currentStep.url;
+                        
+                        // Proceed natively to the next configured step in the execution pipeline
+                        processStep(index + 1);
+                    } else {
+                        statusEl.innerText = `Pipeline halted: Popup was closed before reaching ${currentStep.name}`;
+                        statusEl.style.color = "red";
+                    }
+                }, currentStep.delay);
+            }
+
+            // 3. Kickstart the automated timeline loop starting at index 0 (URL 2)
+            processStep(0);
+        }
+    </script>
+
+</body>
+</html>
